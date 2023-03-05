@@ -18,7 +18,7 @@ Sure! I'm currently working as a software architect and fullstack engineer at Ho
 
 We decided to use event sourcing as a core of entire system. Event-sourcing suites very well for micro-services platforms. To complement this we also chose a CQRS approach to building our new api. 
 
-**That's a smart choice! Event sourcing and CQRS can help to manage the complexity of a microservices system and ensure data consistency between services. Event sourcing helps to maintain a complete and verifiable history of the changes to the data in the system, while CQRS allows you to separate the handling of read and write operations, providing better scalability and performance.
+**That's a smart choice! Event sourcing and CQRS can help to manage the complexity of a microservices system and ensure data consistency between services. Event sourcing helps to maintain a complete and verifiable history of the changes to the data in the system, while CQRS allows you to separate the handling of read and write operations, providing better scalability and performance.**
 What technology stack have you decided to use for implementing this new system?**
 
 
