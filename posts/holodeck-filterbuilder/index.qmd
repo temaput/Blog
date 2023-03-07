@@ -1,8 +1,8 @@
 ---
 title: "Holodeck Inc. Filter Builder"
 author: "Artem Putilov"
-date: "2022-11-07"
-categories: [code, analysis, holodeck, elasticsearch, react]
+date: "2023-03-07"
+categories: [code, holodeck, elasticsearch, react]
 image: "image.png"
 ---
 
@@ -12,11 +12,49 @@ Holodeck Inc. is changing the game in the entertainment industry with its revolu
 
 As a software engineer at Holodeck Inc., I'm part of the team that builds the platform that powers this cutting-edge technology. One of our main challenges is to provide a seamless and intuitive experience for users to create and customize their own virtual environments.
 
-That's where our FilterBuilder comes in. It's a powerful tool that enables users to easily create complex search queries to filter and sort their virtual environments. With a simple drag-and-drop interface, users can add various criteria and conditions to narrow down their search, from the type of environment to the number of people allowed and the specific activities available.
+That's where our FilterBuilder comes in. It's a powerful tool that enables users to easily create complex search queries to filter and sort their virtual characters. With a simple drag-and-drop interface, users can add various criteria and conditions to narrow down their search.
 
 Behind the scenes, our FilterBuilder is built on top of ElasticSearch, a powerful search engine that allows us to efficiently search through vast amounts of data in real-time. We've developed a custom adapter that translates the FilterBuilder structures into ElasticSearch DSL queries, making it easy for us to process and respond to search requests quickly and accurately.
 
 The FilterBuilder itself is built on a recursive and polymorphic architecture, allowing it to handle a wide variety of search criteria and conditions. We use abstract classes and factory functions to dynamically generate the proper concrete classes based on the specific type of filter attribute and schema reference.
+
+In this article I want to share our solution and some of the challenges that we faced.
+
+### Filter Builder UI Design
+
+The filter builder UI is the main interface for the user to apply filters and search criteria to the database. It consists of a main container that can hold multiple filter blocks, each representing a set of search criteria. Each filter block can have its own type (e.g. "AND" or "OR"), and can contain nested filter blocks or filter items, which represent the actual search criteria.
+
+To make the UI more engaging and interactive, we added drag-and-drop functionality to the filter blocks, allowing users to rearrange and reorder them as they see fit. We also added a progress bar to each filter block, showing the percentage of records that match the search criteria of that block. This helps users understand how their search is being narrowed down as they add more filters and search criteria.
+
+### Implementing the Filter Builder UI
+
+The filter builder UI is implemented as a set of React components that handle the rendering and logic of the UI. The main component is the FilterBuilder component, which is responsible for managing the state of the filter blocks and handling user interactions.
+
+Each filter block is represented by 2 main components - FilterBlock component, which is a container block and a FilterItem block. Container block can have its own type (AND, OR) and nested blocks or items. Filter item blocks are represented by various components, depending on the type of search criteria they represent (e.g. text input, number range input, dropdown list).
+
+To handle the polymorphic nature of the filter builder UI, we used a data-driven approach, where each filter item block has a corresponding schema item that describes its type and configuration. This allowed us to dynamically generate the proper input widget for each filter item block, based on its schema item. For example, a number range input widget would be generated for a filter item block that represents a range of numbers, while a dropdown list would be generated for a filter item block that represents a list of values.
+
+
+
+
+```typescript
+export type FilterBlockType = 'AND' | 'OR' | 'PRIORITY';
+
+export interface FilterElementDTO {
+    type: FilterBlockType | 'ITEM' | 'EQUALIZER';
+}
+export interface FilterBlockDTO extends FilterElementDTO {
+    type: FilterBlockType;
+    items: (FilterItemDTO | FilterBlockDTO)[];
+}
+export interface FilterItemDTO<T = unknown> extends FilterElementDTO {
+    type: 'ITEM' | 'EQUALIZER';
+    operator: FilterOperatorType;
+    value: T;
+    schemaRef: FilterSchemaItem;
+}
+```
+
 
 For example, the ValuesListHandler class handles filters that allow users to select from a pre-defined list of options. It generates ElasticSearch DSL queries that search for records that match any of the selected options.
 
